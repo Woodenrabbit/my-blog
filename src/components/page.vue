@@ -28,7 +28,6 @@ export default {
 <style scoped>
 main{
     width:70%;
-    min-width:500px;
 }
 section{
     display: flex;

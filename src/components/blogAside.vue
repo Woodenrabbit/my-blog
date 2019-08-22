@@ -2,10 +2,10 @@
     <aside>
         <div class="cards-aside">
             <div class="my-avatar">
-                <a href="#">
+                <a href="#" @mouseenter="talking" @mouseleave="shutUp">
                     <img :src="avatar">
                 </a>
-                <span class="message-welcome">Hello</span>
+                <span class="message-welcome" :style="{opacity:showWords}">{{message}}</span>
             </div>
             <p>性别：男</p>
             <p>爱好：羽毛球、口琴、画画</p>
@@ -17,8 +17,8 @@
             <p><a href="http://www.anyknew.com" target="_blank">Anynew</a></p>
             <p>-learning-</p>
             <p><a href="http://scotch.io" target="_blank">scotch</a></p>
-            <p>-entertainment-</p>
-            <p><a href="http://www.bilibili.com" target="_blank">bilibili</a></p>
+            <p>-tools-</p>
+            <p><a href="http://www.iconfont.com" target="_blank">iconfont</a></p>
         </div>
         <div class="btn-toTop" v-if="toTop">
             <div></div><div></div><div></div><div></div>
@@ -30,6 +30,7 @@
             <p>API: express</p>
             <p>数据库: mySQL</p>
             <p>创建日期：2019-08-20</p>
+            <p>样式参照：<a href="https://binks-sake.com/">blog</a></p>
         </div>
     </aside>
 </template>
@@ -40,7 +41,12 @@ export default {
     data(){
         return{
             toTop:false,
-            avatar:avatar
+            avatar:avatar,
+            messager:["Would you like to talk with me?","Any problem?","I don't like carrot!","Welcome to my blog!"],
+            message:"Hello!",
+            showWords:false,
+            talkingDelay:'',
+            shutUpDelay:''
         }
     },
     mounted:function(){
@@ -55,7 +61,23 @@ export default {
                 this.toTop = false;
             }
         },
-        backToTop:()=>{window.scroll(0,0)}
+        backToTop:()=>{window.scroll(0,0)},
+        getWords:function(){
+            let index = Math.floor(Math.random()*this.messager.length);
+            this.message = this.messager[index];
+            let delayTime = 1000*this.message.split(' ').length;
+            this.talkingDelay = setTimeout(this.getWords,delayTime);
+        },
+        talking:function(){
+            this.showWords = 1;
+            this.talkingDelay = setTimeout(this.getWords,3000);
+        },
+        shutUp:function(){
+            clearInterval(this.talkingDelay);
+            this.showWords = 0;
+            // clearTimeout(this.talkingDelay);
+            // this.shutUpDelay = setTimeout(()=>{this.messager = "Hello!"},1000);
+        }
     },
     destroyed:function(){
         window.removeEventListener('scroll',this.handldScroll);
@@ -142,17 +164,15 @@ aside{
 .my-avatar a:hover img{
     transform: scale(1.1);
 }
-.my-avatar a:hover + .message-welcome{
-    opacity: 1;
-}
 .message-welcome{
     position: absolute;
-    left:50%;
+    left:150px;
     background: #fff;
     border-radius: 20px 20px 20px 0;
     padding: 0 5px;
     line-height: 2.5rem;
     transition: all .5s;
     opacity: 0;
+    white-space: nowrap;
 }
 </style>

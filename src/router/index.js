@@ -10,15 +10,16 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/index/content'
+      name: 'home',
+      redirect: '/home/content'
     },
     {
-      path: '/index',
+      path: '/home',
       component: page,
-      redirect: '/index/content',
+      redirect: '/home/content',
       children:[
         {path: 'content', component: ()=>import("@/components/blogContent")},
-        {path: 'blogs', component: ()=>import("@/components/blogArticle")},
+        {name:'blogs', path: 'blogs', component: ()=>import("@/components/blogArticle")},
       ]
     },
     {

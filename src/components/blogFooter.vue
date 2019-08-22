@@ -4,9 +4,9 @@
         <div>
             <p>
                 Thanks for visiting my blog
-                <span>© 2019 Copyright </span>
-                <span>|</span>
-                <span><a href="#">about</a></span>
+            </p>
+            <p>
+                <span>© 2019 <a href="#" @click.prevent>Wooden-Rabbit</a></span>
             </p>
         </div>
     </footer>
@@ -24,9 +24,10 @@ export default {
 
 <style scoped>
 footer{
-    height:200px;
     width:100%;
-    background:linear-gradient(0deg,  rgba(90, 140, 150, 0.8), transparent);
+    background:  rgba(90, 140, 150, 0.8);
+    box-shadow: 0 0 10px #000;
+    padding: 25px 0;
 }
 footer div{
     text-align: center;
@@ -37,6 +38,15 @@ footer span{
 }
 footer div:last-child p{
     margin-top:0;
+}
+footer p{
+    line-height:25px;
+}
+footer a{
+    color: #2c3e50;
+}
+footer a:hover{
+    color:greenyellow;
 }
 
 </style>
