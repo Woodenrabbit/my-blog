@@ -20,6 +20,8 @@ export default new Router({
       children:[
         {path: 'content', component: ()=>import("@/components/blogContent")},
         {name:'blogs', path: 'blogs', component: ()=>import("@/components/blogArticle")},
+        {name:'tags', path: 'tags/:tag_name', component: ()=>import("@/components/blogTags")},
+        {name:'archive', path: 'archive', component: ()=>import("@/components/blogArchive")},
       ]
     },
     {

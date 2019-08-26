@@ -28,19 +28,17 @@ export default {
 <style scoped>
 main{
     width:70%;
+    transition: all .2s;
 }
-section{
+#page > section{
     display: flex;
     margin:1% 10%;
     min-height:500px;
 }
 
 @media screen and (max-width:900px){
-    section{
+    #page > section{
         margin:0%;
-    }
-    aside{
-        display: none;
     }
     main{
         width:100%;

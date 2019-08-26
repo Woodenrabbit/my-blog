@@ -1,17 +1,18 @@
 <template>
     <div>
-        <article class="cards-article" v-for="index of maxIndex" :key="index">
-            <h3><a href="#" @click.prevent="toBlogs">{{blogs[(currentPage-1)*divideNum+index-1].title}}</a></h3>
+        <article class="cards-article" v-for="blog in blogFilted()" :key="blog.id">
+            <h3><a href="#" @click.prevent="toBlogs(blog._id)">{{blog.title}}</a></h3>
             <div class="time-tag">
-                <span :title="'创建日期：'+blogs[(currentPage-1)*divideNum+index-1].createDate">
-                    更新日期：{{blogs[(currentPage-1)*divideNum+index-1].editDate}}
+                <span :title="'创建日期：'+blog.addTime" class="iconfont icon-rili">
+                    {{blog.editTime}}
                 </span>
             </div>
             <div class="article-desc">
-                <p v-html="blogs[(currentPage-1)*divideNum+index-1].description"></p>
+                <p v-html="blog.description+'...'"></p>
             </div>
             <div class="article-tags">
-                <span>{{blogs[(currentPage-1)*divideNum+index-1].tag}}</span>
+                <blog-tag v-for="tag in blog.tags" :key="tag" :tag-name="tag">
+                </blog-tag>
             </div>
         </article>
         <div class="divide-bar">
@@ -25,21 +26,23 @@ import messenger from "../libs/messenger.js";
 export default {
     data(){
         return{
-            divideNum:5,
+            divideNum:3,
             blogs:[
-                {id:1, title:"博客搭建规划", description:"当前版本v1.0....", createDate:"2019/08/20" , editDate:"2019/08/20", tag:"个人相关"},
-                {id:2, title:"页面2", description:"today, let's talk about vue......", tag:"个人相关"},
-                {id:3, title:"页面3", description:"today, let's talk about vue......", tag:"个人相关"},
-                {id:4, title:"页面4", description:"today, let's talk about vue......", tag:"个人相关"},
-                {id:5, title:"页面5", description:"today, let's talk about vue......", tag:"个人相关"},
-                {id:6, title:"页面6", description:"today, let's talk about vue......", tag:"个人相关"},
-            ],
+                {id:1, title:"博客搭建规划", description:"当前版本v1.0....", createDate:"2019-08-20 09:30" , editDate:"2019-08-20 15:22", tags:["个人相关","博客"]},
+                ],
             dividePages:0,
             currentPage:1,
-            maxIndex:5
         }
     },
     methods:{
+        getBlogs: function(){
+            this.$axios.get("/post",{})
+                .then((result)=>{
+                    this.blogs = result.data;
+                    this.dividePages = Math.ceil(this.blogs.length/this.divideNum);
+                })
+                .catch((err)=>console.log(err));
+        },
         setCurrentPage: function(e){
             this.currentPage = e.target.innerText;
             if(this.currentPage * this.divideNum > this.blogs.length){
@@ -52,10 +55,19 @@ export default {
         toBlogs: function(){
             messenger.$emit('router','blogs');
             this.$router.push("blogs");
+        },
+        toTags: function(){},
+        blogFilted: function(){
+            let start = (this.currentPage-1) * this.divideNum;
+            let end = start + this.divideNum;
+            return this.blogs.slice(start, end);
         }
     },
     created(){
-        this.dividePages = Math.ceil(this.blogs.length/this.divideNum);
+        this.getBlogs();
+    },
+    components:{
+        blogTag:()=>import("./blogTag.vue")
     }
 }
 </script>
@@ -80,19 +92,13 @@ export default {
 .article-desc p{
     margin-top:10px;
 }
-.article-tags{
-    padding-top: 10px;
-}
-.article-tags span{
-    background:rgba(0, 0, 0, 0.5);
-}
 .time-tag{
     position: absolute;
     right:0;
     top:0;
     color: rgba(0, 0, 0, 0.5);
     font-size: 14px;
-    padding: 10px 0;
+    padding: 12px 0;
 }
 .time-tag span{
     margin-right:10px;

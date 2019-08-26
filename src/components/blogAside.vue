@@ -1,17 +1,21 @@
 <template>
     <aside>
-        <div class="cards-aside">
+        <div class="cards-aside my-info">
             <div class="my-avatar">
                 <a href="#" @mouseenter="talking" @mouseleave="shutUp">
                     <img :src="avatar">
                 </a>
                 <span class="message-welcome" :style="{opacity:showWords}">{{message}}</span>
             </div>
-            <p>性别：男</p>
-            <p>爱好：羽毛球、口琴、画画</p>
-            <p>邮箱：woodenrabbit@qq.com</p>
+            <p>
+                <span class="iconfont icon-youxiang" title="email"></span>
+                <span>woodenrabbit@qq.com</span>
+            </p>
+            <p>
+                <a href="https://github.com/woodenrabbit" target="_blank" class="iconfont icon-github" title="github"></a>
+            </p>
         </div>
-        <div class="cards-aside">
+        <div class="cards-aside recommended">
             <h3>常去的网站</h3>
             <p>-news-</p>
             <p><a href="http://www.anyknew.com" target="_blank">Anynew</a></p>
@@ -30,7 +34,10 @@
             <p>API: express</p>
             <p>数据库: mySQL</p>
             <p>创建日期：2019-08-20</p>
-            <p>样式参照：<a href="https://binks-sake.com/">blog</a></p>
+            <p>样式参照：
+                <a href="https://binks-sake.com/" target="_blank">blog</a>
+                <a href="https://psyduck.liujiayang.cn" target="_blank">blog</a>
+            </p>
         </div>
     </aside>
 </template>
@@ -43,7 +50,7 @@ export default {
             toTop:false,
             avatar:avatar,
             messager:["Would you like to talk with me?","Any problem?","I don't like carrot!","Welcome to my blog!"],
-            message:"Hello!",
+            message:'',
             showWords:false,
             talkingDelay:'',
             shutUpDelay:''
@@ -69,6 +76,7 @@ export default {
             this.talkingDelay = setTimeout(this.getWords,delayTime);
         },
         talking:function(){
+            this.message = 'Hello!';
             this.showWords = 1;
             this.talkingDelay = setTimeout(this.getWords,3000);
         },
@@ -91,18 +99,33 @@ aside{
     min-width: 200px;
     margin-left: 20px;
 }
+aside .iconfont{
+    font-size:30px;
+    transition: all .2s;
+}
+aside .iconfont:hover{
+    font-size:40px;
+}
+.my-info > p{
+    display: flex;
+    justify-content: center;
+}
+.my-info .iconfont{
+    width:40px;
+    height:40px;
+}
 .cards-aside{
     width: 100%;
     /* background: rgba(255, 255, 255, 0.7); */
     padding: 10px 20px;
     margin-bottom:20px;
-    text-align: left;
+    text-align: center;
     border-radius: 3px;
 }
 .cards-aside p{
     line-height:30px;
 }
-.cards-aside a{
+.recommended a{
     color:#63a7b3;
 }
 .btn-toTop{
@@ -166,7 +189,6 @@ aside{
 }
 .message-welcome{
     position: absolute;
-    left:150px;
     background: #fff;
     border-radius: 20px 20px 20px 0;
     padding: 0 5px;
@@ -174,5 +196,10 @@ aside{
     transition: all .5s;
     opacity: 0;
     white-space: nowrap;
+}
+@media screen and (max-width:900px){
+    aside{
+        display: none;
+    }
 }
 </style>
