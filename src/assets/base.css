@@ -11,6 +11,7 @@ a{
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
 a.visited {
+    cursor: text;
     opacity: 1;
     border-bottom: 1px solid black;
 }

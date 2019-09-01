@@ -1,18 +1,18 @@
 <template>
-    <header>
+    <header @click="switchBar">
         <div class="my-title">
             <h1>{{title}}</h1>
             <p>去看没有看过的东西，去做没有做过的事情</p>
         </div>
         <div :class="[show?'nav-show':'',navFixed?'fixed':'not-fixed','navigation-bar']">
             <nav>
-                <a href="#" :class="{'visited':currentLink=='home'}" @click.prevent="visiting($event)" name="home">首页</a>
+                <a href="#" @click.prevent="visiting($event)" name="home">首页</a>
                 <span>|</span>
-                <a href="#" :class="{'visited':currentLink=='archive'}" @click.prevent="visiting($event)" name="archive">归档</a>
+                <a href="#" @click.prevent="visiting($event)" name="archive">归档</a>
                 <span>|</span>
-                <a href="#" :class="{'visited':currentLink=='tags'}" @click.prevent="visiting($event)" name="tags">标签</a>
+                <a href="#" @click.prevent="visiting($event)" name="tags">标签</a>
                 <span>|</span>
-                <a href="#" :class="{'visited':currentLink=='about'}" @click.prevent="visiting($event)" name="about">关于</a>
+                <a href="#" @click.prevent="visiting($event)" name="about">关于</a>
             </nav>
         </div>
         <div class="placeholder" v-if="placeholder">
@@ -32,13 +32,15 @@ export default {
             placeholder:false,
             oldPosition:0,
             show:false,
+            isMobile: false
         }
     },
     mounted:function(){
         this.handleResize();
         window.addEventListener('resize',this.handleResize,true);
         window.addEventListener('scroll',this.handleScroll,true);
-        messenger.$on('router',(target)=>{this.currentLink = target});    
+        //messenger.$on('router',(target)=>{this.currentLink = target});    
+        this.currentLink = sessionStorage.getItem("currentNav");
         let navigation = document.querySelector(".navigation-bar");
         this.navHeight = navigation.offsetTop;
         this.oldPosition = document.documentElement.scrollTop || document.body.scrollTop;
@@ -48,8 +50,10 @@ export default {
             var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
             if(clientWidth<=500){
                 this.title = "Mr.Rabbit";
+                this.isMobile = true;
             }else{
                 this.title = "Mr.Rabbit's Blog";
+                this.isMobile = false;
             }
         },
         handleScroll:function(){
@@ -74,10 +78,17 @@ export default {
                 this.oldPosition = scrollTop;
             }, (0));
         },
+        switchBar: function(){
+            if(this.isMobile){
+                this.$parent.showBar();
+            }
+            //this.$emit('showBar');
+        },
         visiting:function(e){
-            this.currentLink = e.target.name;
-            this.$router.push({name:this.currentLink});
-        }
+            let nav = e.target.name;
+            sessionStorage.setItem("currentNav", nav);
+            this.$router.push({name:nav});
+        },
     },
     destroyed:function(){
         window.removeEventListener('resize',this.handleResize);
@@ -142,6 +153,9 @@ div.nav-show{
     }
     .navigation-bar{
         padding: 0;
+    }
+    .navigation-bar nav{
+        justify-content: center;
     }
 }
 @media screen and (max-width:500px){

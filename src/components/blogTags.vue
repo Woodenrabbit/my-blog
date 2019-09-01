@@ -1,7 +1,12 @@
 <template>
     <section>
         <header>
-            #{{tag}}
+            <h3>所有的标签</h3>
+            <div>
+                <span v-for="(key,value) in combine(tags)" :key="key">
+                    <a href="#" @click.prevent="toBlogs(key)">{{key}}{{(value)}}</a>
+                </span>
+            </div>
         </header>
         <div>
             
@@ -14,27 +19,60 @@ import messenger from "../libs/messenger.js";
 export default {
     data(){
         return{
-            tag:""
+            tag:"",
+            tags:[]
         }
     },
     methods:{
-        toArticle:function(){
-            this.$router.push({name:'blogs'});
+        toBlogs:function(tag){
+            sessionStorage.setItem("blogsFilter", tag);
+            this.$router.push({name:'content'});
+        },        
+        getTags: function(){
+            this.$axios.get("/api/tags")
+                .then((result)=>{
+                    this.tags = result.data;
+                })
+                .catch((err)=>window.console.log(err));
         },
-        blogsFilter:function(month){
-            let blogsFilted = [];
-            this.blogs.forEach((blog)=>{
-                if(blog.createDate.substring(0,7) == month){
-                    blogsFilted.push(blog);
-                }
-            });
-            return blogsFilted;
+        combine: function(collection){
+            //let arr = new Map();
+            let arr = [];
+            collection.forEach((item)=>{
+                item.tags.forEach((tag)=>{
+                    arr.push(tag);
+                    // if(arr[tag] == undefined){
+                    //     arr.set(tag,1);
+                    // }
+                    // else{
+                    //     arr.set(tag,arr[tag]+1);
+                    // }
+                })
+            })
+            console.log(arr)
+            return arr;
         }
     },
     created(){
         this.tag = this.$route.params.tag_name || "";
-        if(this.tag == ""){
-            
+        this.getTags();
+    },
+    computed:{
+        combinedTags(){
+            let arr = [];
+            this.tags.forEach((item)=>{
+                item.tags.forEach((tag)=>{
+                    if(arr[tag]){
+                        this.$set(arr, tag, arr[tag]+1);
+                    }
+                    else{
+                        this.$set(arr, tag, 1);
+                        //arr[tag] = 1;
+                    }
+                })
+            })
+            console.log(arr)
+            return arr;
         }
     }
 }

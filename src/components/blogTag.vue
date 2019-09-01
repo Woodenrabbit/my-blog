@@ -9,8 +9,14 @@ export default {
     props:["tagName"],
     methods:{
         toTags:function(){
-            messenger.$emit('router','tags');
-            this.$router.push({name:"tags",params:{tag_name:this.tagName}});
+            sessionStorage.setItem("blogsFilter", this.tagName);
+            if(this.$route.name == "content"){
+                //this.$router.go(0);
+                this.$router.push({name:"redirect",query:this.$route.path});
+            }
+            else{
+                this.$router.push({name:"content"});
+            }
         }
     }
 }

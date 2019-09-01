@@ -3,13 +3,21 @@
         <header>
             <h2>{{title}}</h2>
             <div class="time-tag article-tags">
-                <a href="#" @click.prevent="toTags" class="iconfont icon-biaoqian" v-for="tag in tags" :key="tag">
-                    <span>{{tag}}</span>
-                </a>
+                <blog-tag v-for="tag in tags" :key="tag" :tag-name="tag"></blog-tag>
                 <span :title="'创建日期：'+createDate" class="iconfont icon-rili">{{editDate}}</span>
             </div>
         </header>
-        <div class="my-article" v-html="content"></div>
+        <div class="my-article">
+            <mavon-editor
+                id="my-article"
+                :value="content"
+                :subfield = "prop.subfield"
+                :defaultOpen = "prop.defaultOpen"
+                :toolbarsFlag = "prop.toolbarsFlag"
+                :boxShadow = "prop.boxShadow"
+                :editable="prop.editable"
+            ></mavon-editor>
+        </div>
         <footer>
             <span class="iconfont icon-ico"></span>
         </footer>
@@ -21,12 +29,11 @@ import messenger from "../libs/messenger.js";
 export default {
     data(){
         return{
-            title:"博客搭建规划",
-            content:"当前版本v1.0</br>实现目标：</br>1.使用vue搭建前端静态页面</br>2.实现响应式移动端适配",
-            author: "Mr.Rabbit",
-            tags:["个人相关","博客"],
-            createDate:"2019-08-20",
-            editDate:"2019-08-20"
+            title:"",
+            content:"",
+            tags:[],
+            createDate:"",
+            editDate:""
         }
     },
     methods:{
@@ -35,7 +42,7 @@ export default {
             this.$router.push("content");
         },
         getArticle: function(){
-            this.$axios.get("/post/"+sessionStorage.getItem("blog_id"))
+            this.$axios.get("/api/blog/"+sessionStorage.getItem("blog_id"))
                 .then((result)=>{
                     this.title = result.data[0].title;
                     this.content = result.data[0].content;
@@ -48,7 +55,20 @@ export default {
     },
     created(){
         this.getArticle();
-    }
+    },
+    components:{blogTag:()=>import("./blogTag")},
+    computed: {
+        prop () {
+          let data = {
+            subfield: false,// 单双栏模式
+            defaultOpen: 'preview',//edit： 默认展示编辑区域 ， preview： 默认展示预览区域 
+            editable: false,//无法编辑
+            toolbarsFlag: false,//隐藏编辑器工具栏
+            boxShadow: false,
+          }
+          return data
+        }
+    },
 }
 </script>
 
@@ -75,8 +95,16 @@ article > header{
     justify-content: center;
     line-height: 25px;
 }
-.my-article{
-    line-height: 30px;
+.my-article >>> .v-note-wrapper{
+    background:none;
+    z-index: 0;
+}
+.my-article >>> .v-note-panel{
+    border: none;
+    z-index: 0;
+}
+.my-article >>> .v-show-content{
+    background:none !important;
 }
 footer{
     text-align: center;
@@ -87,7 +115,12 @@ footer .iconfont{
 }
 @media screen and (max-width:900px){
     article{
-        padding: 0 10%;
+        padding: 0 5%;
+    }
+}
+@media screen and (max-width:500px){
+    article{
+        padding: 0 1%;
     }
 }
 </style>

@@ -3,15 +3,16 @@
         <div v-for="month in months" :key="month.id">
             <h3>{{month}}</h3>
             <p v-for="blog in blogsFilter(month)" :key="blog.id">
-                <span><a href="#" @click.prevent="toArticle(blog._id)">{{blog.title}}</a></span>
-                <span>{{blog.addTime}}</span>
+                <span>{{blog.title}}</span>
+                <!-- <span>{{blog.addTime}}</span> -->
+                <button @click="toEdit(blog._id)">修改</button>
             </p>
         </div>
+        <button @click="toCreate">增加</button>
     </section>
 </template>
 
 <script>
-import messenger from "../libs/messenger.js";
 export default {
     data(){
         return{
@@ -24,7 +25,6 @@ export default {
             this.$axios.get("/api/blogs",{})
                 .then((result)=>{
                     this.blogs = result.data;
-                    this.blogs.sort().reverse();
                     this.blogs.forEach(blog => {
                         let month = blog.addTime.substring(0,7);
                         if(this.months.indexOf(month) == -1){
@@ -35,9 +35,12 @@ export default {
                 })
                 .catch((err)=>console.log(err));
         },
-        toArticle:function(id){
-            sessionStorage.setItem("blog_id", id)
-            this.$router.push({name:'blogs'});
+        toEdit:function(id){
+            sessionStorage.setItem("editID", id)
+            this.$router.push({name:'adminUpdate'});
+        },
+        toCreate:function(){
+            this.$router.push({name:'adminCreate'});
         },
         blogsFilter:function(month){
             let blogsFilted = [];
@@ -60,26 +63,22 @@ section{
     text-align: left;
     border-radius: 3px;
     padding: 10px 30px;
-    background: rgba(255, 255, 255, 0.5);
+    width:50%;
 }
 p{
     display: flex;
     line-height: 30px;
     font-weight: normal;
     padding-left: 30px;
-}
-p:hover{
-    background: rgba(0, 0, 0, 0.2)
+    justify-content: space-between;
 }
 h3{
     padding: 10px 0;
 }
 span{
-    flex-basis: 50%;
     margin-right:10px;
 }
 span:first-child{
-    flex-basis: 70%;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -88,16 +87,11 @@ span:last-child{
 }
 @media screen and (max-width:500px){
     section{
-        padding: 10px 10px;
+        width:100%;
+        padding:10px 0;
     }
     p{
-        display: flex;
-        line-height: 30px;
-        font-weight: normal;
-        padding-left: 10px;
-    }
-    span:last-child{
-        display: none;
+        padding:0 10px;
     }
 }
 </style>

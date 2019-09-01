@@ -22,7 +22,7 @@
             <p>-learning-</p>
             <p><a href="http://scotch.io" target="_blank">scotch</a></p>
             <p>-tools-</p>
-            <p><a href="http://www.iconfont.com" target="_blank">iconfont</a></p>
+            <p><a href="http://www.iconfont.cn" target="_blank">iconfont</a></p>
         </div>
         <div class="btn-toTop" v-if="toTop">
             <div></div><div></div><div></div><div></div>
@@ -32,12 +32,8 @@
             <h3>关于本博客</h3>
             <p>前端：vue</p>
             <p>API: express</p>
-            <p>数据库: mySQL</p>
+            <p>数据库: mongoDB</p>
             <p>创建日期：2019-08-20</p>
-            <p>样式参照：
-                <a href="https://binks-sake.com/" target="_blank">blog</a>
-                <a href="https://psyduck.liujiayang.cn" target="_blank">blog</a>
-            </p>
         </div>
     </aside>
 </template>
