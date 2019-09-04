@@ -56,7 +56,7 @@ export default {
     created(){
         this.getArticle();
     },
-    components:{blogTag:()=>import("./blogTag")},
+    components:{blogTag:()=>import("./common/blogTag")},
     computed: {
         prop () {
           let data = {

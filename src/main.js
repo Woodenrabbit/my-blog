@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+//使用中央总线（用于组件之间的通信）
+import vueBus from 'vue-bus'
 //使用markdown编辑器
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -20,6 +22,7 @@ Router.prototype.push = function push(location) {
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 Vue.use(mavonEditor);
+Vue.use(vueBus);
 
 /* eslint-disable no-new */
 new Vue({

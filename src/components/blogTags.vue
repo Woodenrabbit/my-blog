@@ -3,8 +3,8 @@
         <header>
             <h3>所有的标签</h3>
             <div>
-                <span v-for="(key,value) in combine(tags)" :key="key">
-                    <a href="#" @click.prevent="toBlogs(key)">{{key}}{{(value)}}</a>
+                <span v-for="key in Object.keys(combinedTags)" :key="key">
+                    <a href="#" @click.prevent="toBlogs(key)">{{key}}{{'['+combinedTags[key]+']'}}</a>
                 </span>
             </div>
         </header>
@@ -34,23 +34,6 @@ export default {
                     this.tags = result.data;
                 })
                 .catch((err)=>window.console.log(err));
-        },
-        combine: function(collection){
-            //let arr = new Map();
-            let arr = [];
-            collection.forEach((item)=>{
-                item.tags.forEach((tag)=>{
-                    arr.push(tag);
-                    // if(arr[tag] == undefined){
-                    //     arr.set(tag,1);
-                    // }
-                    // else{
-                    //     arr.set(tag,arr[tag]+1);
-                    // }
-                })
-            })
-            console.log(arr)
-            return arr;
         }
     },
     created(){
@@ -59,19 +42,17 @@ export default {
     },
     computed:{
         combinedTags(){
-            let arr = [];
+            let arr = {};
             this.tags.forEach((item)=>{
                 item.tags.forEach((tag)=>{
-                    if(arr[tag]){
-                        this.$set(arr, tag, arr[tag]+1);
+                    if(arr[tag] == undefined){
+                        arr[tag] = 1;
                     }
                     else{
-                        this.$set(arr, tag, 1);
-                        //arr[tag] = 1;
+                        arr[tag]++;
                     }
                 })
             })
-            console.log(arr)
             return arr;
         }
     }

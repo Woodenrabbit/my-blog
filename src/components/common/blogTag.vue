@@ -1,10 +1,9 @@
 <template>
-    <a href="#" @click.prevent="toTags" class="iconfont icon-biaoqian">
+    <a href="#" @click="toTags" class="iconfont icon-biaoqian">
         <span>{{tagName}}</span>
     </a>
 </template>
 <script>
-import messenger from "../libs/messenger.js";
 export default {
     props:["tagName"],
     methods:{

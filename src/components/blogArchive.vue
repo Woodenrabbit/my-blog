@@ -4,7 +4,7 @@
             <h3>{{month}}</h3>
             <p v-for="blog in blogsFilter(month)" :key="blog.id">
                 <span><a href="#" @click.prevent="toArticle(blog._id)">{{blog.title}}</a></span>
-                <span>{{blog.addTime}}</span>
+                <span>{{blog.addTime.substring(5)}}</span>
             </p>
         </div>
     </section>
@@ -24,7 +24,6 @@ export default {
             this.$axios.get("/api/blogs",{})
                 .then((result)=>{
                     this.blogs = result.data;
-                    this.blogs.sort().reverse();
                     this.blogs.forEach(blog => {
                         let month = blog.addTime.substring(0,7);
                         if(this.months.indexOf(month) == -1){

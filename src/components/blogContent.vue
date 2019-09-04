@@ -1,6 +1,5 @@
 <template>
     <div style="position:relative">
-        <div class="loading" v-if="loading"></div>
         <p class="filter" v-if="queryFilter">筛选条件：{{queryFilter}}
             <a href="#" @click.prevent="removeFilter">撤销</a>
         </p>
@@ -12,22 +11,14 @@
                 </span>
             </div>
             <div class="article-desc">
-                <!-- <p v-html="blog.description+'...'"></p> -->
-                <mavon-editor
-                    :value="blog.description"
-                    :subfield = "false"
-                    :defaultOpen = "'preview'"
-                    :toolbarsFlag = "false"
-                    :boxShadow = "false"
-                    :editable="false"
-                ></mavon-editor>
+                <p v-html="blog.content.substring(0,100)||''+'...'"></p>
             </div>
             <div class="article-tags">
                 <blog-tag v-for="tag in blog.tags" :key="tag" :tag-name="tag"></blog-tag>
             </div>
         </article>
-        <div class="divide-bar">
-            <a v-for="index of dividePages" :key="index" href="#" :class="index==currentPage?'visited':'notActive'" @click.prevent="setCurrentPage($event)">{{index}}</a>
+        <div class="divide-bar" v-if="dividePages <= 1">
+            <a v-for="index of dividePages" :key="index" href="#" :class="index==currentPage?'visited':'notActive'" @click="setCurrentPage($event)">{{index}}</a>
         </div>
     </div>
 </template>
@@ -83,6 +74,9 @@ export default {
         },
         toTags: function(){},
         blogFilted: function(){
+            if(this.divideNum == 0){
+                return this.blogs
+            }
             let start = (this.currentPage-1) * this.divideNum;
             let end = start + this.divideNum;
             return this.blogs.slice(start, end);
@@ -94,11 +88,21 @@ export default {
         }
     },
     created(){
+        //获取标签筛选
         this.queryFilter = sessionStorage.getItem("blogsFilter");
         this.getBlogs();
+        //from page.vue
+        this.$bus.on("changeListLimit",(isMobile)=>{
+            if(isMobile){
+                this.divideNum = 0;
+            }
+            else{
+                this.divideNum = 5; 
+            }
+        })
     },
     components:{
-        blogTag:()=>import("./blogTag.vue")
+        blogTag:()=>import("./common/blogTag")
     }
 }
 </script>
@@ -125,18 +129,6 @@ export default {
 }
 .filter a{
     color:royalblue;
-}
-.loading{
-    position: absolute;
-    top:0;
-    left:50%;
-    height:50px;
-    width:50px;
-    background: rgba(0, 0, 0, 0.5);
-    animation: roll 1s infinite linear;
-}
-@keyframes roll {
-    to {transform:rotate(360deg)}
 }
 .article-desc{
     height:150px;

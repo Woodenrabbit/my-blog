@@ -13,7 +13,6 @@
                 <mavon-editor v-model="content" />
             </div>
             <button @click.prevent="submit">提交</button>
-            <p>{{message}}</p>
         </form>
     </div>
 </template>
@@ -32,9 +31,9 @@ export default {
     },
     methods:{
         submit:function(){
-            this.$axios.post("/api/content/add",{title:this.title, tags:this.tags.join(' '), content:this.content})
+            this.$axios.post("/api/content/add",{title:this.title, tags:this.tags, content:this.content})
                 .then((result)=>{
-                    this.message = result.data;
+                    alert(result.data);
                 })
                 .catch((err)=>window.console.log(err))
         },

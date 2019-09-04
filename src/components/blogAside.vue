@@ -52,18 +52,17 @@ export default {
             shutUpDelay:''
         }
     },
-    mounted:function(){
-        window.addEventListener('scroll',this.handleScroll,true);
-    },
-    methods:{
-        handleScroll:function(){
-            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    created(){
+        //from page.vue
+        this.$bus.on("asideToTop",scrollTop=>{
             if(scrollTop > 200){
                 this.toTop = true;
             }else{
                 this.toTop = false;
             }
-        },
+        })
+    },
+    methods:{
         backToTop:()=>{window.scroll(0,0)},
         getWords:function(){
             let index = Math.floor(Math.random()*this.messager.length);
@@ -83,7 +82,7 @@ export default {
             // this.shutUpDelay = setTimeout(()=>{this.messager = "Hello!"},1000);
         }
     },
-    destroyed:function(){
+    destroyed(){
         window.removeEventListener('scroll',this.handldScroll);
     }
 }

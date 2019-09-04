@@ -30,37 +30,22 @@ export default {
             navFixed:false,
             navHeight:0,
             placeholder:false,
-            oldPosition:0,
             show:false,
             isMobile: false
         }
     },
     mounted:function(){
-        this.handleResize();
-        window.addEventListener('resize',this.handleResize,true);
-        window.addEventListener('scroll',this.handleScroll,true);
         //messenger.$on('router',(target)=>{this.currentLink = target});    
         this.currentLink = sessionStorage.getItem("currentNav");
         let navigation = document.querySelector(".navigation-bar");
         this.navHeight = navigation.offsetTop;
-        this.oldPosition = document.documentElement.scrollTop || document.body.scrollTop;
     },
-    methods:{
-        handleResize:function(){
-            var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-            if(clientWidth<=500){
-                this.title = "Mr.Rabbit";
-                this.isMobile = true;
-            }else{
-                this.title = "Mr.Rabbit's Blog";
-                this.isMobile = false;
-            }
-        },
-        handleScroll:function(){
-            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            //let contentHeight = document.querySelector(".navigation-bar").offsetHeight;
-            if(scrollTop > this.navHeight){
-                if(scrollTop <= this.oldPosition){
+    created(){
+        this.$bus.on("headerNav",scroll=>{
+            //scroll[0] : scrollTop
+            //scroll[1] : scrollDown
+            if(scroll[0] > this.navHeight){
+                if(scroll[1]){
                     this.show = true;
                 }
                 else{
@@ -74,10 +59,18 @@ export default {
                 this.placeholder = false;
                 this.show = false;
             }
-            setTimeout(() => {
-                this.oldPosition = scrollTop;
-            }, (0));
-        },
+        });
+        this.$bus.on("headerChange",clientWidth=>{
+            if(clientWidth<=500){
+                this.title = "Mr.Rabbit";
+                this.isMobile = true;
+            }else{
+                this.title = "Mr.Rabbit's Blog";
+                this.isMobile = false;
+            }
+        })
+    },
+    methods:{
         switchBar: function(){
             if(this.isMobile){
                 this.$parent.showBar();
@@ -91,7 +84,7 @@ export default {
         },
     },
     destroyed:function(){
-        window.removeEventListener('resize',this.handleResize);
+        
     }
 }
 </script>

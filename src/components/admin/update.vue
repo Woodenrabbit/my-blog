@@ -13,7 +13,6 @@
                 <mavon-editor v-model="content" />
             </div>
             <button @click.prevent="submit">提交</button>
-            <p>{{message}}</p>
         </form>
     </div>
 </template>
@@ -40,7 +39,7 @@ export default {
                 .then((result)=>{
                     this.title = result.data[0].title;
                     this.content = result.data[0].content || '';
-                    this.tags = result.data[0].tags;
+                    this.tags = result.data[0].tags.join(' ');
                     this.createDate = result.data[0].addTime;
                     this.editDate = result.data[0].editTime;
                 })
@@ -49,11 +48,11 @@ export default {
         submit: function(){
             this.$axios.put("/api/content/"+sessionStorage.getItem("editID"),{
                     title: this.title,
-                    tags: this.tags.join(' '),
+                    tags: this.tags,
                     content: this.content
                 })
                 .then((result)=>{
-                    this.message = result.data;
+                    alert(result.data);
                 })
                 .catch((err)=>window.console.log(err));
         },
@@ -64,7 +63,7 @@ export default {
     created(){
         this.getArticle();
     },
-    components:{blogTag:()=>import("../blogTag")}
+    components:{blogTag:()=>import("../common/blogTag")}
 }
 </script>
 

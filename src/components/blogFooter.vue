@@ -48,5 +48,9 @@ footer a{
 footer a:hover{
     color:greenyellow;
 }
-
+@media screen and (max-width:500px){
+    footer{
+        display: none;
+    }
+}
 </style>

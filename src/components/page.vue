@@ -11,13 +11,10 @@
             <blog-aside></blog-aside>
         </section>
         <blog-footer></blog-footer>
-        <nav :class="[{'hide':display},'mobile-slider']">
-            <ul>
-                <li><a href="#" @click.prevent="visiting($event)" name="content">首页</a></li>
-                <li><a href="#" @click.prevent="visiting($event)" name="archive">归档</a></li>
-                <li><a href="#" @click.prevent="visiting($event)" name="tags">标签</a></li>
-                <li><a href="#" @click.prevent="visiting($event)" name="about">关于</a></li>
-            </ul>
+        <nav :class="[{'nav-hide':hide},'nav-mobile']" v-if="isMobile">
+            <div v-for="n in mobileNav" :key="n.name">
+                <a href="#" @click="visiting($event)" :name="n.name">{{n.value}}</a>
+            </div>
         </nav>
     </div>
 </template>
@@ -32,7 +29,15 @@ export default {
     },
     data(){
         return {
-            display: false
+            mobileNav:[
+                {name:"content",value:"首页"},
+                {name:"archive",value:"归档"},
+                {name:"tags",value:"标签"},
+                {name:"about",value:"关于"},
+            ],
+            isMobile: "",//宽度小于500时触发
+            oldPosition:0,//判断滚动方向
+            hide:true
         }
     },
     methods:{
@@ -42,10 +47,58 @@ export default {
         visiting: function(event){
             this.showBar();
             this.$router.push({name:event.target.name}); 
+        },
+        resizeHandler: function(){
+            let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+            
+            //to header
+            this.$bus.emit("headerChange",clientWidth);
+            
+            if(clientWidth <= 500){
+                this.isMobile = true;
+            }else{
+                this.isMobile = false;
+            }
+        },
+        scrollHandler:function(){
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            //判断上下滚动
+            let scrollDown;
+            if(scrollTop <= this.oldPosition){
+                scrollDown = false;
+                this.hide = false;
+            }
+            else{
+                scrollDown = true;
+                this.hide = true;
+            }
+            setTimeout(() => {
+                this.oldPosition = scrollTop;
+            }, (0));
+            //to aside
+            this.$bus.emit("asideToTop",scrollTop);
+            //to header
+            this.$bus.emit("headerNav",[scrollTop,scrollDown]);
         }
     },
+    mounted(){
+        //监听窗口大小
+        window.addEventListener('resize',this.resizeHandler,true);
+        //监听滚动条
+        window.addEventListener('scroll',this.scrollHandler,true);
+        //页面初始高度
+        this.oldPosition = document.documentElement.scrollTop || document.body.scrollTop;
+    },
     created(){
-
+        this.resizeHandler();
+        this.scrollHandler();
+    },
+    watch:{
+        isMobile(){
+            console.log(this.isMobile)
+            //to content
+            this.$bus.emit("changeListLimit",this.isMobile);
+        }
     }
 }
 </script>
@@ -63,24 +116,21 @@ main{
     width:70%;
     transition: all .2s;
 }
-.mobile-slider{
+.nav-mobile{
     position:fixed;
-    left:-300px;
-    top:0;
-    height:100%;
-    width:200px;
-    background:rgba(90, 140, 150, 0.9);
+    left:0;
+    bottom:0;
+    display: flex;
+    justify-content: space-around;
+    height:50px;
+    width:100%;
+    line-height:50px;
+    background:rgb(90, 140, 150);
+    box-shadow: 0 0 10px #000;
     transition: all .5s;
 }
-.mobile-slider ul{
-    margin-top:200px;
-    padding: 0;
-}
-.mobile-slider ul li{
-    margin-top: 20px;
-}
-.hide{
-    left:0;
+.nav-hide{
+    bottom:-50px;
 }
 .loading-bar{
     height:5px;
