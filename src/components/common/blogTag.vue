@@ -5,21 +5,17 @@
 </template>
 <script>
 export default {
-    props:["tagName"],
-    methods:{
-        toTags:function(){
+    props: ["tagName"],
+    methods: {
+        toTags() {
             sessionStorage.setItem("blogsFilter", this.tagName);
             if(this.$route.name == "content"){
                 //this.$router.go(0);
-                this.$router.push({name:"redirect",query:this.$route.path});
-            }
-            else{
+                this.$router.push({name:"redirect", query:this.$route.path});
+            } else {
                 this.$router.push({name:"content"});
             }
         }
     }
 }
 </script>
-<style scoped>
-
-</style>

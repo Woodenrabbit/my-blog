@@ -1,13 +1,14 @@
-body{
-    margin:0 auto;
+html,
+body {
+    height: 100%;
 }
-p,h1,h2,h3,h4{
-    padding: 0;
+* {
+    padding : 0;
     margin: 0;
 }
-a{
+a {
     text-decoration: none;
-    color:#000;
+    color: #000;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
 a.visited {
@@ -39,14 +40,14 @@ ul{
 }
 
 
-.article-tags{
+.article-tags {
     display: flex;
     padding-top: 10px;
 }
-.article-tags > .iconfont{
-    font-size:14px;
-    margin-right:10px;
+.article-tags > .iconfont {
+    font-size: 14px;
+    margin-right: 10px;
 }
-.article-tags a:hover{
+.article-tags a:hover {
     color:yellowgreen;
 }

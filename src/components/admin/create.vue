@@ -1,67 +1,65 @@
 <template>
-    <div id="admin">
-        <form method="POST">
-            <div class="form-group">
-                <label for="title">标题</label>
-                <input type="text" name="title" v-model="title" @focus="edit_title">
-            </div>
-            <div class="form-group">
-                <label for="tags">标签</label>
-                <input type="text" name="tags" v-model="tags">
-            </div>
-            <div>
-                <mavon-editor v-model="content" />
-            </div>
-            <button @click.prevent="submit">提交</button>
-        </form>
-    </div>
+    <el-form ref="createForm" :model="form" :rules="rules" class="login-box">
+        <el-form-item label="标题" prop="title">
+            <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="标签" prop="tag">
+            <el-input v-model="form.tags" placeholder="请输入标签"></el-input>
+        </el-form-item>
+        <el-form-item prop="content">
+            <mavon-editor v-model="form.content" />
+        </el-form-item>
+        <el-button type="primary" @click.native.prevent="submit('createForm')">提交</el-button>
+    </el-form>
 </template>
 
 <script>
 export default {
-    data(){
-        return{
-            title:"",
-            tags:"",
-            content:"",
-            message:"请输入..."
+    data() {
+        return {
+            form: {
+                title: "",
+                tags: "",
+                content: "",
+            },
+            rules: {
+                title: [
+                    {required: true, message: "标题不可为空", tigger: 'blur'}
+                ],
+            },
         }
     },
-    components:{
-    },
-    methods:{
-        submit:function(){
-            this.$axios.post("/api/content/add",{title:this.title, tags:this.tags, content:this.content})
-                .then((result)=>{
-                    alert(result.data);
-                })
-                .catch((err)=>window.console.log(err))
-        },
-        edit_title:function(){
-            this.message = "请输入...";
+    methods: {
+        submit: function(formName){
+            this.$refs[formName].validate(valid =>{
+                if (valid) {
+                    this.$axios.post("/api/content/add",{
+                        title:this.form.title,
+                        tags:this.form.tags, 
+                        content:this.form.content
+                    })
+                    .then((result)=>{
+                        alert(result.data);
+                    })
+                    .catch((err)=>window.console.log(err))
+                }
+            })
         }
     },
-    watch:{
-        // content:function(){
-        //     window.console.log(this.content);
-        // }
-    },
-    computed:{
-    }
 }
 </script>
 
 <style scoped>
-#admin form > div{
-    margin: 20px 0;
-}
-@media screen and (max-width:500px){
-    label{
-        font-size:20px;
+    #admin form > div {
+        margin: 20px 0;
     }
-    input{
-        height:20px;
-        width:60%;
+    @media screen and (max-width:500px) {
+        label {
+            font-size: 20px;
+        }
+        input {
+            height: 20px;
+            width: 60%;
+        }
     }
-}
 </style>

@@ -14,43 +14,44 @@
 
 <script>
 export default {
-    data(){
-        return{
-            tag:""
+    data() {
+        return {
+            tag: ""
         }
     },
-    methods:{
+    methods: {
         
     },
-    created(){
+    created() {
         
     }
 }
 </script>
 
 <style scoped>
-section{
-    text-align: left;
-    border-radius: 3px;
-    padding: 10px 30px;
-    background: rgba(255, 255, 255, 0.5);
-}
-p{
-    display: flex;
-    line-height: 30px;
-    font-weight: normal;
-    padding-left: 30px;
-}
-h3{
-    padding: 10px 0;
-}
-span{
-    flex-basis: 50%;
-    margin-right:10px;
-}
-@media screen and (max-width:500px){
-    section{
-        padding: 10px 10px;
+    section {
+        text-align: left;
+        border-radius: 3px;
+        padding: 10px 30px;
+        background: rgba(255, 255, 255, 0.5);
     }
-}
+    p {
+        line-height: 30px;
+        padding-left: 30px;
+    }
+    h3 {
+        padding: 10px 0;
+    }
+    span {
+        flex-basis: 50%;
+        margin-right: 10px;
+    }
+    @media screen and (max-width:500px) {
+        section {
+            padding: 10px 1%;
+        }
+        p {
+            padding-left: 10px;
+        }
+    }
 </style>

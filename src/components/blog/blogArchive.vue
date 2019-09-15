@@ -1,35 +1,28 @@
 <template>
-    <el-table :data="blogs" style="width: 100%">
-        <el-table-column prop="addTime" label="日期" min-width="100px">
-        </el-table-column>
-        <el-table-column prop="title" label="标题">
-        </el-table-column>
-        <el-table-column prop="tags" label="标签">
-        </el-table-column>
-        <el-table-column prop="_id" label="操作">
-            <template slot-scope="scope">
-                <el-button
-                @click.native.prevent="toEdit(blogs[scope.$index]._id)"
-                type="button"  size="small">
-                修改
-                </el-button>
-            </template>
-        </el-table-column>
-        <button @click="toCreate">增加</button>
-  </el-table>
+    <section>
+        <div v-for="month in months" :key="month.id">
+            <h3>{{month}}</h3>
+            <p v-for="blog in blogsFilter(month)" :key="blog.id">
+                <span>
+                    <a href="#" @click.prevent="toArticle(blog._id)">{{blog.title}}</a>
+                </span>
+                <span>{{blog.addTime.substring(5)}}</span>
+            </p>
+        </div>
+    </section>
 </template>
 
 <script>
 export default {
-    data() {
+    data(){
         return{
-            blogs:[],
-            months:[],
+            blogs: [],
+            months: [],
         }
     },
-    methods: {
+    methods:{
         getBlogs: function() {
-            this.$axios.get("/api/blogs",{})
+            this.$axios.get("/api/blogs", {})
                 .then((result) =>{
                     this.blogs = result.data;
                     this.blogs.forEach(blog => {
@@ -40,19 +33,16 @@ export default {
                     });
                     this.months.sort().reverse();
                 })
-                .catch((err)=>console.log(err));
+                .catch((err) =>console.log(err));
         },
-        toEdit: function(id) {
-            sessionStorage.setItem("editID", id)
-            this.$router.push({name:'adminUpdate'});
-        },
-        toCreate: function() {
-            this.$router.push({name:'adminCreate'});
+        toArticle: function(id) {
+            sessionStorage.setItem("blog_id", id)
+            this.$router.push({name:'blogs'});
         },
         blogsFilter: function(month) {
             let blogsFilted = [];
-            this.blogs.forEach((blog)=>{
-                if (blog.addTime.substring(0,7) == month){
+            this.blogs.forEach((blog) =>{
+                if (blog.addTime.substring(0,7) == month) {
                     blogsFilted.push(blog);
                 }
             });
@@ -70,22 +60,26 @@ export default {
         text-align: left;
         border-radius: 3px;
         padding: 10px 30px;
-        width: 50%;
+        background: rgba(255, 255, 255, 0.5);
     }
     p {
         display: flex;
         line-height: 30px;
         font-weight: normal;
         padding-left: 30px;
-        justify-content: space-between;
+    }
+    p:hover {
+        background: rgba(0, 0, 0, 0.2)
     }
     h3 {
         padding: 10px 0;
     }
     span {
+        flex-basis: 50%;
         margin-right: 10px;
     }
     span:first-child {
+        flex-basis: 70%;
         white-space: nowrap;
         overflow: hidden;
     }
@@ -94,11 +88,16 @@ export default {
     }
     @media screen and (max-width:500px) {
         section {
-            width: 100%;
-            padding: 10px 0;
+            padding: 10px 10px;
         }
         p {
-            padding: 0 10px;
+            display: flex;
+            line-height: 30px;
+            font-weight: normal;
+            padding-left: 10px;
+        }
+        span:last-child {
+            display: none;
         }
     }
 </style>
